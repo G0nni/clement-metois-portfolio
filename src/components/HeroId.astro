@@ -1,0 +1,279 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { identite } from '~/data/cv';
+
+// Détection automatique de la photo : dès qu'un fichier photo.* existe
+// dans src/assets, il est optimisé et affiché. Sinon, placeholder.
+const fichiers = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/photo.{jpg,jpeg,png,webp,avif}',
+  { eager: true },
+);
+const photo = Object.values(fichiers)[0]?.default;
+---
+
+<aside class="hero-id">
+  <span class="id-stamp" aria-hidden="true">Personnel</span>
+
+  <div class="hero-id-inner">
+    <figure class="photo-frame">
+      <span class="photo-corner tl" aria-hidden="true"></span>
+      <span class="photo-corner tr" aria-hidden="true"></span>
+      <span class="photo-corner bl" aria-hidden="true"></span>
+      <span class="photo-corner br" aria-hidden="true"></span>
+
+      <div class="photo-inner">
+        {
+          photo ? (
+            <Image
+              src={photo}
+              alt={`${identite.prenom} ${identite.nom}`}
+              width={380}
+              height={380}
+              loading="eager"
+              class="photo-img"
+            />
+          ) : (
+            <div class="photo-ph" aria-hidden="true">
+              <span class="photo-sil" />
+              <span class="photo-lbl">photo.jpg</span>
+            </div>
+          )
+        }
+        <span class="photo-scan" aria-hidden="true"></span>
+      </div>
+    </figure>
+
+    <dl class="id-data">
+      <div class="id-row">
+        <dt class="id-key">Identité</dt>
+        <dd class="id-val">{identite.prenom} {identite.nom}</dd>
+      </div>
+      <div class="id-row">
+        <dt class="id-key">Alias</dt>
+        <dd class="id-val id-val--alias">{identite.alias}</dd>
+      </div>
+      <div class="id-row">
+        <dt class="id-key">Statut</dt>
+        <dd class="id-val"><span class="dot" aria-hidden="true"></span>{identite.statut}</dd>
+      </div>
+      <div class="id-row">
+        <dt class="id-key">Base</dt>
+        <dd class="id-val">{identite.base}</dd>
+      </div>
+    </dl>
+  </div>
+</aside>
+
+<style>
+  .hero-id {
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    padding: 3.5rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 2rem;
+    position: relative;
+  }
+  /* Le fond du panneau doit filer jusqu'au bord gauche du viewport,
+     même quand la grille est centrée sur --max. */
+  .hero-id::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 100%;
+    width: 100vw;
+    background: var(--bg2);
+  }
+
+  .id-stamp {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.2rem;
+    font-family: var(--font-d);
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--amber);
+    opacity: 0.3;
+    text-transform: uppercase;
+    transform: rotate(15deg);
+    border: 1px solid currentColor;
+    padding: 0.12rem 0.45rem;
+  }
+
+  /* Largeur fixe pour que la photo ne s'étire pas sur grand écran. */
+  .hero-id-inner {
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .photo-frame {
+    position: relative;
+    width: 190px;
+    height: 190px;
+  }
+  .photo-corner {
+    position: absolute;
+    width: 13px;
+    height: 13px;
+    border-color: var(--amber);
+    border-style: solid;
+    opacity: 0.6;
+  }
+  .photo-corner.tl { top: -3px; left: -3px; border-width: 2px 0 0 2px; }
+  .photo-corner.tr { top: -3px; right: -3px; border-width: 2px 2px 0 0; }
+  .photo-corner.bl { bottom: -3px; left: -3px; border-width: 0 0 2px 2px; }
+  .photo-corner.br { bottom: -3px; right: -3px; border-width: 0 2px 2px 0; }
+
+  .photo-inner {
+    width: 100%;
+    height: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  .photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .photo-ph {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    height: 100%;
+  }
+  .photo-sil {
+    width: 65px;
+    height: 65px;
+    background: var(--bg4);
+    border-radius: 50% 50% 0 0 / 60% 60% 0 0;
+    position: relative;
+    margin-bottom: 2px;
+  }
+  .photo-sil::after {
+    content: '';
+    position: absolute;
+    bottom: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 96px;
+    height: 36px;
+    background: var(--bg4);
+    border-radius: 50% 50% 0 0;
+  }
+  .photo-lbl {
+    font-size: 0.52rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0.35;
+  }
+
+  .photo-scan {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    animation: scan 3s linear infinite;
+    opacity: 0.35;
+  }
+  @keyframes scan {
+    from { top: 0; }
+    to { top: 100%; }
+  }
+
+  .id-data {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    width: 100%;
+  }
+  .id-row {
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border2);
+  }
+  .id-row:last-child {
+    border: none;
+    padding: 0;
+  }
+  .id-key {
+    font-size: 0.5rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--amber);
+    opacity: 0.6;
+    display: block;
+    margin-bottom: 0.1rem;
+  }
+  .id-val {
+    font-size: 0.77rem;
+    color: var(--text2);
+    margin: 0;
+  }
+  .id-val--alias {
+    color: var(--amber);
+    font-style: italic;
+  }
+
+  .dot {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 4px var(--green);
+    margin-right: 0.35rem;
+    animation: pulse 2s ease-in-out infinite;
+    vertical-align: middle;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  @media (max-width: 960px) {
+    .hero-id {
+      align-items: flex-start;
+      padding: 2rem var(--gutter-sm);
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-id::before {
+      display: none;
+    }
+    .id-stamp {
+      top: auto;
+      bottom: 1rem;
+      right: 1.2rem;
+    }
+    .hero-id-inner {
+      width: auto;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .id-data {
+      width: auto;
+      flex: 1;
+      min-width: 180px;
+    }
+  }
+</style>

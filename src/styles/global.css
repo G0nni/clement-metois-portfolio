@@ -1,0 +1,228 @@
+/* ─────────────────────────────────────────────
+   Tokens & base — portfolio Clément Métois
+   Direction : dossier classifié, navy + ambre
+   ───────────────────────────────────────────── */
+
+:root {
+  --bg: #06090f;
+  --bg2: #0c1220;
+  --bg3: #121a2e;
+  --bg4: #1a2540;
+
+  --amber: #f59e0b;
+  --amber2: #fcd34d;
+  --amber-dim: rgba(245, 158, 11, 0.07);
+
+  --red: #ef4444;
+  --cyan: #38bdf8;
+  --green: #22c55e;
+
+  --text: #6e8ca8;
+  --text2: #b0c8de;
+  --white: #e8f4ff;
+
+  --border: rgba(245, 158, 11, 0.13);
+  --border2: rgba(245, 158, 11, 0.06);
+
+  --font-d: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --font-m: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --max: 1280px;
+  --col-l: 340px;
+  --gutter: 3rem;
+  --gutter-sm: 1.5rem;
+  --nav-h: 64px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + 1rem);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-m);
+  font-size: 13px;
+  line-height: 1.65;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Trame technique de fond. Décorative, sous le contenu. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(245, 158, 11, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 158, 11, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+:focus-visible {
+  outline: 2px solid var(--amber2);
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 200;
+  background: var(--amber);
+  color: var(--bg);
+  padding: 0.7rem 1.2rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  transition: top 0.2s;
+}
+.skip-link:focus-visible {
+  top: 1rem;
+}
+
+/* ── Primitives de section ── */
+.section {
+  border-top: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+}
+.section--alt {
+  background: var(--bg2);
+}
+.sec-wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 6rem var(--gutter);
+}
+
+.ey {
+  font-size: 0.56rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0.7;
+}
+.ey::before {
+  content: '//';
+  color: var(--text);
+  opacity: 0.3;
+}
+
+h1 {
+  font-family: var(--font-d);
+  font-weight: 800;
+  font-size: clamp(3.2rem, 5vw, 5rem);
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+h1 .outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--amber);
+}
+
+h2 {
+  font-family: var(--font-d);
+  font-weight: 800;
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 2.5rem;
+}
+h2 em {
+  color: var(--amber);
+  font-style: normal;
+  font-weight: 400;
+}
+
+/* ── Boutons ── */
+.btn-p,
+.btn-g {
+  font-family: var(--font-m);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  padding: 0.78rem 1.8rem;
+  display: inline-block;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.btn-p {
+  background: var(--amber);
+  color: var(--bg);
+  font-weight: 500;
+}
+.btn-p:hover {
+  background: var(--amber2);
+}
+.btn-g {
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.btn-g:hover {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+/* ── Révélation au scroll ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s, transform 0.6s;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 960px) {
+  .sec-wrap {
+    padding: 4rem var(--gutter-sm);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Sans JavaScript, l'observateur ne tourne pas : le contenu reste visible
+   plutôt que bloqué à opacity 0. */
+html:not(.js) .reveal {
+  opacity: 1;
+  transform: none;
+}

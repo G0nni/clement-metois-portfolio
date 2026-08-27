@@ -1,0 +1,115 @@
+---
+import '@fontsource/ibm-plex-mono/latin-300.css';
+import '@fontsource/ibm-plex-mono/latin-400.css';
+import '@fontsource/ibm-plex-mono/latin-500.css';
+import '@fontsource/ibm-plex-mono/latin-300-italic.css';
+import '@fontsource/barlow-condensed/latin-300.css';
+import '@fontsource/barlow-condensed/latin-400.css';
+import '@fontsource/barlow-condensed/latin-600.css';
+import '@fontsource/barlow-condensed/latin-700.css';
+import '@fontsource/barlow-condensed/latin-800.css';
+import '~/styles/global.css';
+
+import { identite, seo } from '~/data/cv';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = seo.titre, description = seo.description } = Astro.props;
+// Sous GitHub Pages le site est servi depuis un sous-chemin :
+// tout lien absolu doit être préfixé, sinon il pointe à la racine du domaine.
+const withBase = (chemin: string) =>
+  `${import.meta.env.BASE_URL}/${chemin}`.replace(/\/{2,}/g, '/');
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogUrl = new URL(withBase(seo.ogImage), Astro.site);
+const favicon = withBase('favicon.svg');
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: `${identite.prenom} ${identite.nom}`,
+  alternateName: identite.alias,
+  jobTitle: identite.metier,
+  email: `mailto:${identite.email}`,
+  telephone: `+33${identite.telephoneHref.slice(1)}`,
+  url: canonical.href,
+  sameAs: [identite.linkedin, identite.github],
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Toulouse',
+    addressCountry: 'FR',
+  },
+  knowsAbout: [
+    'DevOps',
+    'DevSecOps',
+    'Infrastructure as Code',
+    'Terraform',
+    'Ansible',
+    'Kubernetes',
+    'Cybersécurité',
+  ],
+};
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href={favicon} />
+    <meta name="theme-color" content="#06090f" />
+    <meta name="generator" content={Astro.generator} />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:locale" content="fr_FR" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Marqueur posé avant le premier paint : sans JS, rien n'est masqué. -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <slot />
+
+    <script>
+      // Révélation au scroll, partagée par tous les composants.
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const cibles = document.querySelectorAll<HTMLElement>('[data-reveal]');
+
+      if (reduced) {
+        cibles.forEach((el) => el.classList.add('is-visible'));
+      } else {
+        const io = new IntersectionObserver(
+          (entrees) => {
+            entrees.forEach((e) => {
+              if (!e.isIntersecting) return;
+              e.target.classList.add('is-visible');
+              io.unobserve(e.target);
+            });
+          },
+          { threshold: 0.08 },
+        );
+        cibles.forEach((el) => {
+          const delai = el.dataset.revealDelay;
+          if (delai) el.style.transitionDelay = `${delai}ms`;
+          io.observe(el);
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,132 @@
+---
+import { identite, hero } from '~/data/cv';
+import HeroId from './HeroId.astro';
+---
+
+<section id="hero">
+  <HeroId />
+
+  <div class="hero-content">
+    <div>
+      <p class="hero-ey">{hero.eyebrow}</p>
+      <h1>{hero.titreLigne1}<br /><span class="outline">{hero.titreLigne2}</span></h1>
+    </div>
+
+    <p class="hero-role">{identite.employeur}</p>
+
+    <p class="hero-desc">
+      Spécialisé en <strong>sécurisation d'infrastructures</strong>, DevSecOps et automatisation.
+      <br /><br />
+      Terraform, Ansible, Kubernetes — infrastructure as code par conviction.
+      <br />
+      <strong>Cybersécurité offensive</strong>, chasse aux vulnérabilités, security by design.
+    </p>
+
+    <ul class="cert-pills">
+      {hero.certifications.map((c) => <li class="cert-pill">{c}</li>)}
+    </ul>
+
+    <div class="hero-btns">
+      <a href="#contact" class="btn-p">Me contacter</a>
+      <a href={identite.linkedin} target="_blank" rel="noopener noreferrer" class="btn-g">
+        LinkedIn →
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    /* La colonne gauche s'élargit sur grand écran pour que le contenu
+       de droite s'aligne avec les sections centrées sur --max. */
+    grid-template-columns: max(var(--col-l), calc((100vw - var(--max)) / 2 + var(--col-l))) 1fr;
+    align-items: stretch;
+    padding-top: var(--nav-h);
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-content {
+    padding: 4rem var(--gutter);
+    padding-right: max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter)));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2.2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-ey {
+    font-family: var(--font-m);
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+    opacity: 0.6;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .hero-ey::before {
+    content: '//';
+    opacity: 0.35;
+  }
+
+  .hero-role {
+    font-family: var(--font-d);
+    font-weight: 600;
+    font-size: 1.2rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--amber);
+    opacity: 0.75;
+  }
+
+  .hero-desc {
+    font-size: 0.79rem;
+    color: var(--text);
+    max-width: 480px;
+    line-height: 1.85;
+    border-left: 2px solid var(--border);
+    padding-left: 1.1rem;
+  }
+  .hero-desc strong {
+    color: var(--text2);
+    font-weight: 500;
+  }
+
+  .cert-pills {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    max-width: 500px;
+  }
+  .cert-pill {
+    background: var(--amber-dim);
+    border: 1px solid var(--border);
+    color: var(--amber2);
+    font-size: 0.63rem;
+    letter-spacing: 0.06em;
+    padding: 0.28rem 0.75rem;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 960px) {
+    #hero {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+    .hero-content {
+      padding: 2.5rem var(--gutter-sm);
+    }
+  }
+</style>

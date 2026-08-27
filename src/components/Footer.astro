@@ -1,0 +1,183 @@
+---
+import { identite, flag } from '~/data/cv';
+
+const annee = new Date().getFullYear();
+---
+
+<footer>
+  <div class="foot-inner">
+    <span>© {annee} {identite.prenom} {identite.nom}</span>
+    <span>Toulouse — Occitanie</span>
+    <button class="flag-btn" type="button" id="flag-btn" aria-haspopup="dialog">
+      {flag.bouton}
+    </button>
+  </div>
+</footer>
+
+<div class="flag-modal" id="flag-modal" role="dialog" aria-modal="true" aria-labelledby="flag-code" hidden>
+  <div class="flag-box">
+    <p class="flag-pre">{flag.preambule}</p>
+    <p class="flag-code" id="flag-code">{flag.code}</p>
+    <p class="flag-sub">
+      Bien joué. {flag.indice}
+      <br /><br />
+      <span class="flag-sig">{flag.signature}</span>
+    </p>
+    <button class="flag-close" type="button" id="flag-close">[ fermer ]</button>
+  </div>
+</div>
+
+<style>
+  footer {
+    border-top: 1px solid var(--border);
+    background: var(--bg2);
+    position: relative;
+    z-index: 1;
+  }
+  .foot-inner {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 1.5rem var(--gutter);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.62rem;
+    color: var(--text);
+    opacity: 0.5;
+  }
+
+  .flag-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    font-family: var(--font-m);
+    font-size: 0.62rem;
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    opacity: 0.35;
+    transition: opacity 0.2s, color 0.2s;
+  }
+  .flag-btn:hover {
+    opacity: 0.8;
+    color: var(--amber);
+  }
+
+  .flag-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(6, 9, 15, 0.96);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .flag-modal[hidden] {
+    display: none;
+  }
+  .flag-modal.is-shown {
+    opacity: 1;
+  }
+
+  .flag-box {
+    background: var(--bg2);
+    border: 1px solid var(--amber);
+    padding: 2.5rem 3rem;
+    text-align: center;
+    box-shadow: 0 0 60px rgba(245, 158, 11, 0.1);
+    max-width: 460px;
+    width: 90%;
+  }
+  .flag-pre {
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0.35;
+    margin-bottom: 1rem;
+  }
+  .flag-code {
+    font-family: var(--font-m);
+    font-size: 0.93rem;
+    color: var(--amber2);
+    padding: 0.8rem 1rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    margin-bottom: 1.4rem;
+    word-break: break-all;
+    letter-spacing: 0.03em;
+  }
+  .flag-sub {
+    font-size: 0.73rem;
+    color: var(--text);
+    line-height: 1.75;
+    margin-bottom: 1.3rem;
+  }
+  .flag-sig {
+    opacity: 0.4;
+    font-size: 0.7rem;
+  }
+  .flag-close {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-m);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    padding: 0.48rem 1.1rem;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .flag-close:hover {
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+
+  @media (max-width: 960px) {
+    .foot-inner {
+      flex-direction: column;
+      gap: 0.4rem;
+      padding: 1.2rem var(--gutter-sm);
+      text-align: center;
+    }
+    .flag-box {
+      padding: 2rem 1.5rem;
+    }
+  }
+</style>
+
+<script>
+  const modal = document.getElementById('flag-modal');
+  const ouvrir = document.getElementById('flag-btn');
+  const fermer = document.getElementById('flag-close');
+
+  if (modal && ouvrir && fermer) {
+    // On mémorise le déclencheur pour lui rendre le focus à la fermeture.
+    let precedent: HTMLElement | null = null;
+
+    const afficher = () => {
+      precedent = document.activeElement as HTMLElement;
+      modal.hidden = false;
+      // Un tick avant d'ajouter la classe, sinon la transition ne part pas.
+      requestAnimationFrame(() => modal.classList.add('is-shown'));
+      fermer.focus();
+    };
+
+    const masquer = () => {
+      modal.classList.remove('is-shown');
+      modal.hidden = true;
+      precedent?.focus();
+    };
+
+    ouvrir.addEventListener('click', afficher);
+    fermer.addEventListener('click', masquer);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) masquer();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.hidden) masquer();
+    });
+  }
+</script>

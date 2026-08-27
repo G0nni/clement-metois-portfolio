@@ -1,0 +1,186 @@
+---
+import { identite, contactRows } from '~/data/cv';
+---
+
+<section id="contact" class="section">
+  <div class="sec-wrap">
+    <div class="contact-grid">
+      <div>
+        <p class="ey">Establish contact</p>
+        <h2>Contact</h2>
+
+        <ul class="c-rows">
+          {
+            contactRows.map((row) => (
+              <li class="c-row">
+                <span class="c-ico" aria-hidden="true">
+                  {row.icone}
+                </span>
+                <div>
+                  <p class="c-lbl">{row.label}</p>
+                  <p class="c-val">
+                    {row.href ? (
+                      <a
+                        href={row.href}
+                        target={row.externe ? '_blank' : undefined}
+                        rel={row.externe ? 'noopener noreferrer' : undefined}
+                      >
+                        {row.valeur}
+                      </a>
+                    ) : (
+                      row.valeur
+                    )}
+                  </p>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="ct-wrap reveal" data-reveal>
+        <div class="ct-bar" aria-hidden="true">
+          <span class="ctd"></span><span class="ctd"></span><span class="ctd"></span>
+          <span class="ct-title">connection.sh</span>
+        </div>
+
+        <div class="ct-body">
+          <div aria-hidden="true">
+            <div class="ctl"><span class="ctp">$</span><span class="ctc">establish-contact --target={identite.alias}</span></div>
+            <span class="ctn"></span>
+            <span class="cto"><span class="ctk">[~]</span> Résolution en cours...</span>
+            <span class="cto"><span class="ctg">[+]</span> Host: {identite.base} — <span class="ctg">ONLINE</span></span>
+            <span class="cto"><span class="ctg">[+]</span> Port 443 (email) — <span class="ctg">OPEN</span></span>
+            <span class="cto"><span class="ctg">[+]</span> Port 22 (github/{identite.alias}) — <span class="ctg">OPEN</span></span>
+            <span class="ctn"></span>
+            <span class="cto"><span class="ctk">STATUT&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="ctv">{identite.statut} — à l'écoute</span></span>
+            <span class="cto"><span class="ctk">RÉPONSE&nbsp;&nbsp;&nbsp;</span><span class="ctv">{identite.delaiReponse}</span></span>
+            <span class="ctn"></span>
+          </div>
+
+          <a href={`mailto:${identite.email}`} class="ct-btn">Envoyer un message →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .c-rows {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .c-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.78rem 1rem;
+    border: 1px solid var(--border2);
+    background: var(--bg2);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .c-row:hover {
+    border-color: var(--border);
+    background: var(--bg3);
+  }
+  .c-ico {
+    color: var(--amber);
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    width: 14px;
+    text-align: center;
+  }
+  .c-lbl {
+    font-size: 0.5rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0.35;
+  }
+  .c-val {
+    font-size: 0.76rem;
+    color: var(--text2);
+  }
+  .c-val a {
+    color: var(--cyan);
+    text-decoration: none;
+  }
+  .c-val a:hover {
+    text-decoration: underline;
+  }
+
+  .ct-wrap {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+  }
+  .ct-bar {
+    background: var(--bg3);
+    padding: 0.55rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .ctd {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .ctd:nth-child(1) { background: #c44040; }
+  .ctd:nth-child(2) { background: #e07b2a; }
+  .ctd:nth-child(3) { background: #4a9e5c; }
+  .ct-title {
+    margin: 0 auto;
+    font-size: 0.6rem;
+    color: var(--text);
+    opacity: 0.4;
+    letter-spacing: 0.06em;
+  }
+
+  .ct-body {
+    padding: 1.2rem;
+    font-size: 0.72rem;
+    line-height: 2;
+  }
+  .ctl { display: flex; gap: 0.4rem; }
+  .ctp { color: var(--amber); user-select: none; }
+  .ctc { color: var(--white); }
+  .cto { display: block; }
+  .ctk { color: var(--amber); }
+  .ctv { color: var(--cyan); }
+  .ctg { color: var(--green); }
+  .ctn { display: block; height: 0.4rem; }
+
+  .ct-btn {
+    display: inline-block;
+    margin-top: 1rem;
+    background: var(--amber);
+    color: var(--bg);
+    padding: 0.7rem 1.5rem;
+    font-family: var(--font-m);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .ct-btn:hover {
+    background: var(--amber2);
+  }
+
+  @media (max-width: 960px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+  }
+</style>

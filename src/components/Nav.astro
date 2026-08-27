@@ -1,0 +1,211 @@
+---
+import { identite, navItems } from '~/data/cv';
+---
+
+<nav aria-label="Navigation principale">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#hero">
+      {identite.prenom} <em>{identite.nom}</em>
+    </a>
+
+    <button class="nav-burger" type="button" aria-expanded="false" aria-controls="nav-menu">
+      <span class="sr-only">Ouvrir le menu</span>
+      <span class="burger-bar" aria-hidden="true"></span>
+      <span class="burger-bar" aria-hidden="true"></span>
+      <span class="burger-bar" aria-hidden="true"></span>
+    </button>
+
+    <ul class="nav-links" id="nav-menu">
+      {
+        navItems.map((item) => (
+          <li>
+            <a href={item.href}>{item.label}</a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <a href={`mailto:${identite.email}`} class="nav-cta">Contact</a>
+  </div>
+</nav>
+
+<style>
+  nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--border);
+    background: rgba(6, 9, 15, 0.92);
+    backdrop-filter: blur(16px);
+  }
+  .nav-inner {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 1rem var(--gutter);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .nav-logo {
+    font-family: var(--font-d);
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.08em;
+    color: var(--white);
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav-logo em {
+    color: var(--amber);
+    font-style: normal;
+  }
+
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 2.5rem;
+  }
+  .nav-links a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover,
+  .nav-links a[aria-current='true'] {
+    color: var(--amber);
+  }
+
+  .nav-cta {
+    background: var(--amber);
+    color: var(--bg);
+    padding: 0.48rem 1.1rem;
+    font-family: var(--font-m);
+    font-size: 0.63rem;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .nav-cta:hover {
+    background: var(--amber2);
+  }
+
+  .nav-burger {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: none;
+    border: 1px solid var(--border);
+    padding: 0.55rem 0.6rem;
+    cursor: pointer;
+    order: 3;
+  }
+  .burger-bar {
+    display: block;
+    width: 16px;
+    height: 1.5px;
+    background: var(--amber);
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .nav-burger[aria-expanded='true'] .burger-bar:nth-child(2) {
+    transform: translateY(5.5px) rotate(45deg);
+  }
+  .nav-burger[aria-expanded='true'] .burger-bar:nth-child(3) {
+    opacity: 0;
+  }
+  .nav-burger[aria-expanded='true'] .burger-bar:nth-child(4) {
+    transform: translateY(-5.5px) rotate(-45deg);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 960px) {
+    .nav-inner {
+      flex-wrap: wrap;
+      padding: 1rem var(--gutter-sm);
+    }
+    .nav-burger {
+      display: flex;
+    }
+    .nav-cta {
+      order: 2;
+      margin-left: auto;
+      margin-right: 0.6rem;
+    }
+    .nav-links {
+      order: 4;
+      flex-basis: 100%;
+      flex-direction: column;
+      gap: 0;
+      display: none;
+    }
+    .nav-links.is-open {
+      display: flex;
+    }
+    .nav-links li {
+      border-top: 1px solid var(--border2);
+    }
+    .nav-links a {
+      display: block;
+      padding: 0.9rem 0;
+      font-size: 0.68rem;
+    }
+  }
+</style>
+
+<script>
+  const burger = document.querySelector<HTMLButtonElement>('.nav-burger');
+  const menu = document.querySelector<HTMLUListElement>('#nav-menu');
+
+  burger?.addEventListener('click', () => {
+    const ouvert = burger.getAttribute('aria-expanded') === 'true';
+    burger.setAttribute('aria-expanded', String(!ouvert));
+    burger.querySelector('.sr-only')!.textContent = ouvert ? 'Ouvrir le menu' : 'Fermer le menu';
+    menu?.classList.toggle('is-open', !ouvert);
+  });
+
+  menu?.querySelectorAll('a').forEach((a) =>
+    a.addEventListener('click', () => {
+      burger?.setAttribute('aria-expanded', 'false');
+      menu.classList.remove('is-open');
+    }),
+  );
+
+  // Surlignage de la section courante via IntersectionObserver.
+  const liens = new Map<string, HTMLAnchorElement>();
+  menu?.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {
+    liens.set(a.getAttribute('href')!.slice(1), a);
+  });
+
+  const sections = [...liens.keys()]
+    .map((id) => document.getElementById(id))
+    .filter((el): el is HTMLElement => el !== null);
+
+  if (sections.length) {
+    const spy = new IntersectionObserver(
+      (entrees) => {
+        const visible = entrees
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!visible) return;
+        liens.forEach((a, id) => a.setAttribute('aria-current', String(id === visible.target.id)));
+      },
+      { rootMargin: '-30% 0px -60% 0px', threshold: 0 },
+    );
+    sections.forEach((s) => spy.observe(s));
+  }
+</script>

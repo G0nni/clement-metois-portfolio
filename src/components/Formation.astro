@@ -1,0 +1,139 @@
+---
+import { formations } from '~/data/cv';
+---
+
+<section id="formation" class="section section--alt">
+  <div class="sec-wrap">
+    <p class="ey">Verified credentials</p>
+    <h2>Formation <em>&amp; certifications</em></h2>
+
+    <ol class="frise">
+      {
+        formations.map((f, i) => (
+          <li class="frise-item reveal" data-reveal data-reveal-delay={i * 70}>
+            <span class="frise-year">{f.annee}</span>
+            <p class="frise-type">{f.type}</p>
+            <h3 class="frise-name">{f.intitule}</h3>
+            <p class="frise-school">{f.ecole}</p>
+            {f.badge && <span class={`frise-badge frise-badge--${f.badge.variante}`}>{f.badge.texte}</span>}
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .frise {
+    position: relative;
+    padding-left: 5rem;
+    list-style: none;
+  }
+  .frise::before {
+    content: '';
+    position: absolute;
+    left: 3.8rem;
+    top: 0.6rem;
+    bottom: 0.6rem;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--amber) 0%, rgba(245, 158, 11, 0.1) 100%);
+  }
+
+  .frise-item {
+    position: relative;
+    padding: 1.1rem 0 1.1rem 2.2rem;
+    border-bottom: 1px solid var(--border2);
+  }
+  .frise-item:last-child {
+    border: none;
+  }
+  .frise-item::before {
+    content: '';
+    position: absolute;
+    left: -0.35rem;
+    top: 1.7rem;
+    width: 8px;
+    height: 8px;
+    border: 1.5px solid var(--amber);
+    background: var(--bg);
+    transform: rotate(45deg);
+  }
+
+  .frise-year {
+    position: absolute;
+    left: -5rem;
+    top: 1.35rem;
+    font-size: 0.6rem;
+    color: var(--amber);
+    opacity: 0.55;
+    letter-spacing: 0.06em;
+    width: 4rem;
+    text-align: right;
+  }
+  .frise-type {
+    font-size: 0.52rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text);
+    opacity: 0.3;
+    margin-bottom: 0.25rem;
+  }
+  .frise-name {
+    font-family: var(--font-d);
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 0.18rem;
+  }
+  .frise-school {
+    font-size: 0.68rem;
+    color: var(--text);
+  }
+  .frise-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.45rem;
+    font-size: 0.53rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.12rem 0.5rem;
+    border: 1px solid;
+  }
+  .frise-badge--verified {
+    color: var(--green);
+    border-color: rgba(34, 197, 94, 0.25);
+    background: rgba(34, 197, 94, 0.05);
+  }
+  .frise-badge--cert {
+    color: var(--cyan);
+    border-color: rgba(56, 189, 248, 0.25);
+    background: rgba(56, 189, 248, 0.05);
+  }
+
+  @media (max-width: 640px) {
+    .frise {
+      padding-left: 1.6rem;
+    }
+    .frise::before {
+      left: 0.4rem;
+    }
+    .frise-item {
+      padding-left: 1.6rem;
+    }
+    .frise-year {
+      position: static;
+      display: block;
+      width: auto;
+      text-align: left;
+      margin-bottom: 0.3rem;
+    }
+    .frise-item::before {
+      top: 1.5rem;
+      left: -1.6rem;
+    }
+  }
+</style>

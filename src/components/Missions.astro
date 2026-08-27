@@ -1,0 +1,193 @@
+---
+import { commits, identite } from '~/data/cv';
+---
+
+<section id="missions" class="section">
+  <div class="sec-wrap">
+    <p class="ey">git log --author={identite.alias}</p>
+    <h2>Expériences <em>professionnelles</em></h2>
+
+    <div class="git-log">
+      {
+        commits.map((c, i) => {
+          const idBody = `commit-${c.hash}`;
+          const ouvert = Boolean(c.ouvertParDefaut);
+          return (
+            <article class="git-entry reveal" data-reveal data-reveal-delay={i * 60}>
+              {/* Vrai bouton : accessible au clavier et annoncé comme repliable. */}
+              <button
+                class="git-header"
+                type="button"
+                aria-expanded={ouvert}
+                aria-controls={idBody}
+              >
+                <span class="git-hash">{c.hash}</span>
+                <span class={`git-badge git-badge--${c.badge}`}>{c.badgeLabel}</span>
+                <span class="git-msg">{c.message}</span>
+                <span class="git-date">{c.date}</span>
+                <span class={ouvert ? 'git-toggle is-open' : 'git-toggle'} aria-hidden="true">
+                  ▸
+                </span>
+              </button>
+
+              <div class={ouvert ? 'git-body is-open' : 'git-body'} id={idBody}>
+                <p class="git-org">{c.organisation}</p>
+                <ul class="git-list">
+                  {c.points.map((p) => (
+                    <li>{p}</li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .git-log {
+    display: flex;
+    flex-direction: column;
+  }
+  .git-entry {
+    border-bottom: 1px solid var(--border2);
+  }
+
+  .git-header {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 5.5rem auto 1fr 6.5rem 1.2rem;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.95rem 0;
+    background: none;
+    border: none;
+    text-align: left;
+    font-family: inherit;
+    cursor: pointer;
+    user-select: none;
+  }
+  .git-header:hover {
+    opacity: 0.85;
+  }
+
+  .git-hash {
+    font-size: 0.67rem;
+    color: var(--amber);
+    font-style: italic;
+    letter-spacing: 0.03em;
+  }
+  .git-badge {
+    font-size: 0.54rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.1rem 0.45rem;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+  .git-badge--active {
+    color: var(--green);
+    border-color: rgba(34, 197, 94, 0.3);
+    background: rgba(34, 197, 94, 0.05);
+  }
+  .git-badge--done {
+    color: var(--amber);
+    border-color: var(--border);
+    background: var(--amber-dim);
+  }
+  .git-badge--perso {
+    color: var(--cyan);
+    border-color: rgba(56, 189, 248, 0.25);
+    background: rgba(56, 189, 248, 0.05);
+  }
+
+  .git-msg {
+    font-family: var(--font-d);
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+  .git-date {
+    font-size: 0.59rem;
+    color: var(--text);
+    opacity: 0.4;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .git-toggle {
+    color: var(--amber);
+    opacity: 0.45;
+    transition: transform 0.2s, opacity 0.2s;
+    font-size: 0.75rem;
+  }
+  .git-header:hover .git-toggle {
+    opacity: 0.9;
+  }
+  .git-toggle.is-open {
+    transform: rotate(90deg);
+  }
+
+  .git-body {
+    display: none;
+    padding: 0.2rem 0 1.1rem 6.5rem;
+  }
+  .git-body.is-open {
+    display: block;
+  }
+  .git-org {
+    font-size: 0.68rem;
+    color: var(--cyan);
+    margin-bottom: 0.6rem;
+  }
+  .git-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.28rem;
+  }
+  .git-list li {
+    font-size: 0.73rem;
+    color: var(--text);
+    padding-left: 1rem;
+    position: relative;
+    line-height: 1.5;
+  }
+  .git-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--amber);
+    opacity: 0.4;
+  }
+
+  @media (max-width: 960px) {
+    .git-header {
+      grid-template-columns: auto auto 1fr 1.2rem;
+      gap: 0.7rem;
+    }
+    .git-date {
+      display: none;
+    }
+    .git-body {
+      padding-left: 0;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.git-header').forEach((bouton) => {
+    bouton.addEventListener('click', () => {
+      const cible = document.getElementById(bouton.getAttribute('aria-controls')!);
+      const fleche = bouton.querySelector('.git-toggle');
+      const ouvert = bouton.getAttribute('aria-expanded') === 'true';
+
+      bouton.setAttribute('aria-expanded', String(!ouvert));
+      cible?.classList.toggle('is-open', !ouvert);
+      fleche?.classList.toggle('is-open', !ouvert);
+    });
+  });
+</script>

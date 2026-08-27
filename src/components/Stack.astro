@@ -1,0 +1,165 @@
+---
+import { stack } from '~/data/cv';
+
+const NIVEAU_MAX = 5;
+---
+
+<section id="stack" class="section section--alt">
+  <div class="sec-wrap">
+    <p class="ey">Service enumeration</p>
+    <h2>Stack <em>technique</em></h2>
+
+    <table class="svc-table">
+      <thead>
+        <tr>
+          <th scope="col" class="th-cat">Catégorie</th>
+          <th scope="col">Outils</th>
+          <th scope="col" class="th-lvl">Niveau</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          stack.map((ligne, i) => (
+            <tr class="reveal" data-reveal data-reveal-delay={i * 55}>
+              <th scope="row" class="td-cat">
+                {ligne.categorie}
+              </th>
+              <td>
+                <ul class="td-tools">
+                  {ligne.outils.map((o) => (
+                    <li class={ligne.cles?.includes(o) ? 't-chip t-chip--hot' : 't-chip'}>{o}</li>
+                  ))}
+                </ul>
+              </td>
+              <td>
+                {/* Le texte reste lisible aux lecteurs d'écran, les pips sont décoratifs. */}
+                <span class="sr-only">
+                  {ligne.niveau} sur {NIVEAU_MAX}
+                </span>
+                <span class="lvl-bar" aria-hidden="true">
+                  {Array.from({ length: NIVEAU_MAX }, (_, k) => (
+                    <span class={k < ligne.niveau ? 'lvl-pip lvl-pip--on' : 'lvl-pip'} />
+                  ))}
+                </span>
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<style>
+  .svc-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .svc-table thead tr {
+    border-bottom: 2px solid var(--border);
+  }
+  .svc-table th {
+    font-size: 0.54rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--amber);
+    opacity: 0.6;
+    padding: 0 1rem 0.8rem;
+    text-align: left;
+    font-weight: 400;
+  }
+  .th-cat { width: 180px; }
+  .th-lvl { width: 90px; }
+  .svc-table th:first-child { padding-left: 0; }
+
+  .svc-table tbody tr {
+    border-bottom: 1px solid var(--border2);
+    transform: translateX(-6px);
+    transition: background 0.15s, opacity 0.4s, transform 0.4s;
+  }
+  .svc-table tbody tr.is-visible {
+    transform: translateX(0);
+  }
+  html:not(.js) .svc-table tbody tr {
+    transform: none;
+  }
+  .svc-table tbody tr:hover {
+    background: rgba(245, 158, 11, 0.03);
+  }
+  .svc-table td,
+  .svc-table tbody th {
+    padding: 0.85rem 1rem;
+    vertical-align: middle;
+    font-size: 0.74rem;
+  }
+  .svc-table td:first-child,
+  .svc-table tbody th:first-child {
+    padding-left: 0;
+  }
+
+  .td-cat {
+    color: var(--amber2);
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    opacity: 1;
+    font-weight: 400;
+    text-align: left;
+  }
+
+  .td-tools {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.28rem;
+  }
+  .t-chip {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    padding: 0.17rem 0.52rem;
+    font-size: 0.64rem;
+    color: var(--text2);
+    white-space: nowrap;
+  }
+  .t-chip--hot {
+    border-color: rgba(245, 158, 11, 0.25);
+    color: var(--amber2);
+  }
+
+  .lvl-bar {
+    display: flex;
+    gap: 2px;
+  }
+  .lvl-pip {
+    width: 8px;
+    height: 8px;
+    background: var(--bg4);
+    border: 1px solid var(--border);
+  }
+  .lvl-pip--on {
+    background: var(--amber);
+    border-color: var(--amber);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 640px) {
+    .th-cat,
+    .td-cat {
+      width: auto;
+      white-space: normal;
+    }
+    .svc-table td,
+    .svc-table th {
+      padding: 0.7rem 0.5rem;
+    }
+  }
+</style>
