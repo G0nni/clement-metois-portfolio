@@ -39,8 +39,8 @@ jobs:
         env:
           # Project Pages. Pour un domaine perso : SITE_URL=https://ton-domaine.fr
           # et BASE_PATH=/ (plus un fichier public/CNAME).
-          SITE_URL: https://${{ github.repository_owner }}.github.io
-          BASE_PATH: /clement-metois-portfolio
+          SITE_URL: https://cv.nilux.app
+          BASE_PATH: /
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
